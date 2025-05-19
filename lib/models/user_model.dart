@@ -32,5 +32,21 @@ class UserModel {
       password: map['password'],
     );
   }
+
+  UserModel copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? phone,
+    String? password,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      password: password ?? this.password,
+    );
+  }
 }
 // ignore: constant_identifier_names

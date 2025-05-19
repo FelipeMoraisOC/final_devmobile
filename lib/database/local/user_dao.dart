@@ -34,16 +34,18 @@ class UserDao {
     await db.delete(_tableName);
   }
 
-  static Future<void> insertUser(UserModel user) async {
+  static Future<UserModel> insertUser(UserModel user) async {
     final db = await _getDatabase();
     final userMap = user.toMap();
     userMap['password'] = Encrypt.encryptPassword(user.password!);
     try {
-      await db.insert(
+      final id = await db.insert(
         _tableName,
         userMap,
         conflictAlgorithm: ConflictAlgorithm.fail,
       );
+      // Retorna o UserModel com o id gerado
+      return user.copyWith(id: id.toString());
     } on DatabaseException catch (e) {
       if (e.isUniqueConstraintError()) {
         throw Exception('Já existe um usuário com este e-mail.');

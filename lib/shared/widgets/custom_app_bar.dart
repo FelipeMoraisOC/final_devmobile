@@ -8,6 +8,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
 
   @override
+  // ignore: overridden_fields
+  final Size preferredSize = const Size.fromHeight(kToolbarHeight);
+
+  void _openDrawer(BuildContext context) {
+    Scaffold.of(context).openDrawer();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDark = themeProvider.isDarkMode;
@@ -69,7 +77,4 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ],
     );
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

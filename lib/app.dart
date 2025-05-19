@@ -1,4 +1,5 @@
 import 'package:final_devmobile/core/themes/theme_provider.dart';
+import 'package:final_devmobile/modules/auth/login_screen.dart';
 import 'package:final_devmobile/modules/auth/register_screen.dart';
 import 'package:final_devmobile/modules/home/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => RegisterScreen(),
-        // '/login': (context) => LoginScreen(),
+        '/login': (context) => LoginScreen(),
         '/home': (context) => HomeScreen(),
         '/register': (context) => RegisterScreen(),
       },

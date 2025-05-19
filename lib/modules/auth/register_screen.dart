@@ -1,7 +1,5 @@
-import 'package:final_devmobile/models/user_model.dart';
 import 'package:final_devmobile/modules/auth/auth_controller.dart';
 import 'package:final_devmobile/shared/utils/textformfield_validators.dart';
-import 'package:final_devmobile/shared/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -109,6 +107,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ElevatedButton(
                 onPressed: _register,
                 child: const Text('Registrar'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
+                child: const Text('Já tem uma conta? Faça login'),
               ),
             ],
           ),
