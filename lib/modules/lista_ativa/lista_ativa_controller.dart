@@ -82,10 +82,13 @@ class ListaAtivaController extends ChangeNotifier {
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text('Editar item'),
+                const Text('Editar item', style: const TextStyle(fontSize: 14)),
                 Text(
                   getNomeProduto(item.produtoId),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
                 ),
               ],
             ),
@@ -220,7 +223,7 @@ class ListaAtivaController extends ChangeNotifier {
     // 1) Cria o modelo de ItemCompra (id fica nulo pois é autoincrement)
     final novoItem = ItemCompra(
       produtoId: produto.id!,
-      medida: 'Unidade', // ou outro default
+      medida: '', // ou outro default
       quantidade: quantidade,
       preco: null,
       comprado: false,
@@ -228,9 +231,19 @@ class ListaAtivaController extends ChangeNotifier {
     );
 
     // 2) Insere no banco
-    final inserido = await ItemCompraDao.insert(novoItem);
-    novoItem.copyWith(id: inserido);
+    final itemId = await ItemCompraDao.insert(novoItem);
+    await ListaCompraDao.associarItem(listaId, itemId);
+    novoItem.copyWith(id: itemId);
     allItems.add(novoItem);
     applyFilters();
+  }
+
+  double get totalComprado {
+    return allItems
+        .where((item) => item.comprado) // filtra só os comprados
+        .fold(0.0, (soma, item) {
+          final precoUnit = item.preco ?? 0.0;
+          return soma + precoUnit * item.quantidade;
+        });
   }
 }

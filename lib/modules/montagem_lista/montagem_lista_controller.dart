@@ -2,6 +2,7 @@
 import 'package:final_devmobile/database/local/item_compra_dao.dart';
 import 'package:final_devmobile/database/local/lista_compra_dao.dart';
 import 'package:final_devmobile/models/lista_compra_model.dart';
+import 'package:final_devmobile/modules/home/home_screen.dart';
 import 'package:final_devmobile/shared/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:final_devmobile/models/produto_model.dart';
@@ -132,7 +133,10 @@ class MontagemListaController extends ChangeNotifier {
     }
 
     CustomSnackBar.show(context, 'Lista de compras criada com sucesso!');
-    Navigator.pop(context);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
+    );
   }
 
   void removerItem(ItemCompra item) {

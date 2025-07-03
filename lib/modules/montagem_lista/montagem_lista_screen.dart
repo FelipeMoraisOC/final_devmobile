@@ -1,4 +1,6 @@
 // montagem_lista_screen.dart
+import 'package:final_devmobile/core/constants.dart';
+import 'package:final_devmobile/core/themes/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:final_devmobile/shared/utils/shared_preferences.dart';
@@ -120,19 +122,14 @@ class _MontagemListaScreenState extends State<MontagemListaScreen> {
                               return ListTile(
                                 dense: true,
                                 minLeadingWidth: 0,
-
-                                leading: Text(
-                                  '${item.quantidade.toInt()} ${ctrl.getNomeProduto(item.produtoId)}',
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                                trailing: IconButton(
-                                  iconSize: 16,
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                    size: 16,
+                                leading: SizedBox(
+                                  width: 120, // ajuste conforme necessário
+                                  child: Text(
+                                    '${item.quantidade.toInt()} ${ctrl.getNomeProduto(item.produtoId)}',
+                                    style: const TextStyle(fontSize: 12),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
-                                  onPressed: () => controller.removerItem(item),
                                 ),
                               );
                             }).toList(),
@@ -192,7 +189,10 @@ class _MontagemListaScreenState extends State<MontagemListaScreen> {
                                   )
                                   .quantidade;
                           return Card(
-                            color: inList ? Colors.green.shade100 : null,
+                            color:
+                                inList
+                                    ? AppThemeConstants.primary.withAlpha(200)
+                                    : null,
                             child: ListTile(
                               title: Text(p.nome),
                               subtitle: Text(

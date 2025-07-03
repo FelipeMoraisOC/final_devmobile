@@ -85,8 +85,8 @@ class _ProdutoScreenState extends State<ProdutoScreen> {
                       usuarioId: usuarioId!,
                     );
                     produto == null
-                        ? controller.adicionarProduto(novoProduto)
-                        : controller.atualizarProduto(novoProduto);
+                        ? controller.adicionarProduto(novoProduto, context)
+                        : controller.atualizarProduto(novoProduto, context);
                     Navigator.pop(context);
                   }
                 },
@@ -111,7 +111,7 @@ class _ProdutoScreenState extends State<ProdutoScreen> {
               ElevatedButton(
                 child: const Text('Excluir'),
                 onPressed: () {
-                  controller.deletarProduto(produto.id!, usuarioId!);
+                  controller.deletarProduto(produto.id!, usuarioId!, context);
                   Navigator.pop(context);
                 },
               ),

@@ -52,13 +52,40 @@ class _ListaAtivaScreenState extends State<ListaAtivaScreen> {
                 title: Text('${ctrl.listaCompra!.nome} - Ativa'),
                 actions: [
                   TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.cyanAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
                     onPressed: () => ctrl.salvarListaAtiva(context),
                     child: const Text(
                       'Salvar',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.black),
                     ),
                   ),
                 ],
+              ),
+              bottomSheet: Container(
+                width: double.infinity,
+                color: Theme.of(context).cardColor,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 20,
+                  horizontal: 16,
+                ),
+                child: Consumer<ListaAtivaController>(
+                  builder: (_, ctrl, __) {
+                    final total = ctrl.totalComprado.toStringAsFixed(2);
+                    return Text(
+                      'Total comprado: R\$ $total',
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  },
+                ),
               ),
               body: Padding(
                 padding: const EdgeInsets.all(16),
@@ -131,6 +158,7 @@ class _ListaAtivaScreenState extends State<ListaAtivaScreen> {
                         },
                       ),
                     ),
+                    const SizedBox(height: 25),
                   ],
                 ),
               ),
@@ -192,16 +220,14 @@ class _ListaAtivaScreenState extends State<ListaAtivaScreen> {
                                           labelText: 'Produto',
                                         ),
                                         items:
-                                            ctrl.allItems.map((item) {
-                                              // supondo que ctrl.allProducts exista
-                                              final p = ctrl.getProdutoById(
-                                                item.produtoId,
-                                              );
-                                              return DropdownMenuItem(
-                                                value: p,
-                                                child: Text(p!.nome),
-                                              );
-                                            }).toList(),
+                                            ctrl.produtos
+                                                .map(
+                                                  (e) => DropdownMenuItem(
+                                                    value: e,
+                                                    child: Text(e.nome),
+                                                  ),
+                                                )
+                                                .toList(),
                                         value: selected,
                                         onChanged:
                                             (p) => setSt(() => selected = p),
@@ -257,7 +283,7 @@ class _ListaAtivaScreenState extends State<ListaAtivaScreen> {
                       },
                       child: Icon(Icons.add),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 20),
                   ],
                   // botão principal que abre/fecha o menu
                   FloatingActionButton(
