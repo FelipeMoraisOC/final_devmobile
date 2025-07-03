@@ -21,7 +21,7 @@ class _AnimatedProgressCircleState extends State<AnimatedProgressCircle>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 2000),
     );
     _anim = Tween<double>(
       begin: 0.0,
@@ -44,7 +44,7 @@ class _AnimatedProgressCircleState extends State<AnimatedProgressCircle>
         ..duration = const Duration(milliseconds: 3000)
         ..reset();
       _anim = Tween<double>(begin: 0.0, end: widget.progress).animate(
-        CurvedAnimation(parent: _ctrl, curve: Curves.easeOut),
+        CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
       )..addStatusListener((status) {
         if (status == AnimationStatus.completed && widget.progress == 1.0) {
           setState(() => _showGlow = true);
@@ -102,6 +102,8 @@ class _AnimatedProgressCircleState extends State<AnimatedProgressCircle>
                         color:
                             widget.progress == 1.0
                                 ? Theme.of(context).colorScheme.primary
+                                : widget.progress < 0.5
+                                ? Colors.amber
                                 : Theme.of(context).colorScheme.secondary,
                       ),
                       Text(
