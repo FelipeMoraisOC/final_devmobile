@@ -3,6 +3,7 @@ import 'package:final_devmobile/database/local/lista_compra_dao.dart';
 import 'package:final_devmobile/models/lista_compra_model.dart';
 import 'package:final_devmobile/models/produto_model.dart';
 import 'package:final_devmobile/modules/home/home_screen.dart';
+import 'package:final_devmobile/shared/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:final_devmobile/models/item_compra_model.dart';
 import 'package:final_devmobile/models/categoria_model.dart';
@@ -193,5 +194,43 @@ class ListaAtivaController extends ChangeNotifier {
     final categoriaId =
         produtos.firstWhere((p) => p.id == produtoId).categoriaId;
     return categoriaId ?? 0;
+  }
+
+  Future<void> deletarLista(BuildContext context) async {
+    await ListaCompraDao.delete(listaId, usuarioId);
+    CustomSnackBar.show(context, 'Lista de compras deletada com sucesso!');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => HomeScreen()),
+    );
+  }
+
+  Produto? getProdutoById(int produtoId) {
+    try {
+      return produtos.firstWhere((p) => p.id == produtoId);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> addItemToLista({
+    required Produto produto,
+    required double quantidade,
+  }) async {
+    // 1) Cria o modelo de ItemCompra (id fica nulo pois é autoincrement)
+    final novoItem = ItemCompra(
+      produtoId: produto.id!,
+      medida: 'Unidade', // ou outro default
+      quantidade: quantidade,
+      preco: null,
+      comprado: false,
+      usuarioId: usuarioId,
+    );
+
+    // 2) Insere no banco
+    final inserido = await ItemCompraDao.insert(novoItem);
+    novoItem.copyWith(id: inserido);
+    allItems.add(novoItem);
+    applyFilters();
   }
 }

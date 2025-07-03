@@ -1,4 +1,5 @@
 // lista_ativa_screen.dart
+import 'package:final_devmobile/models/produto_model.dart';
 import 'package:final_devmobile/shared/utils/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ class _ListaAtivaScreenState extends State<ListaAtivaScreen> {
   late ListaAtivaController controller;
   bool _loading = true;
   String? _userId;
+  bool _fabOpen = false;
 
   @override
   void initState() {
@@ -27,6 +29,12 @@ class _ListaAtivaScreenState extends State<ListaAtivaScreen> {
         usuarioId: uid,
       );
       controller.init().then((_) => setState(() => _loading = false));
+    });
+  }
+
+  void _toggleFab() {
+    setState(() {
+      _fabOpen = !_fabOpen;
     });
   }
 
@@ -125,6 +133,139 @@ class _ListaAtivaScreenState extends State<ListaAtivaScreen> {
                     ),
                   ],
                 ),
+              ),
+              floatingActionButton: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // botão de EXCLUIR (só aparece quando _fabOpen == true)
+                  if (_fabOpen) ...[
+                    FloatingActionButton(
+                      heroTag: 'delete_all',
+                      backgroundColor: Colors.red,
+                      mini: true,
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder:
+                              (_) => AlertDialog(
+                                title: const Text('Confirmação'),
+                                content: const Text('Excluir a Lista?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text('Não'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      ctrl.deletarLista(context);
+                                    },
+                                    child: const Text('Sim'),
+                                  ),
+                                ],
+                              ),
+                        );
+                      },
+                      child: const Icon(Icons.delete),
+                    ),
+                    const SizedBox(height: 8),
+                    // botão de ADICIONAR PRODUTO
+                    FloatingActionButton(
+                      heroTag: 'add_prod',
+                      onPressed: () async {
+                        // prepara variáveis locais
+                        Produto? selected;
+                        final qtyCtrl = TextEditingController(text: '1');
+
+                        await showDialog<void>(
+                          context: context,
+                          builder: (ctx) {
+                            return StatefulBuilder(
+                              builder: (ctx, setSt) {
+                                return AlertDialog(
+                                  title: const Text('Adicionar Produto'),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      // Dropdown para escolher o produto
+                                      DropdownButtonFormField<Produto>(
+                                        decoration: const InputDecoration(
+                                          labelText: 'Produto',
+                                        ),
+                                        items:
+                                            ctrl.allItems.map((item) {
+                                              // supondo que ctrl.allProducts exista
+                                              final p = ctrl.getProdutoById(
+                                                item.produtoId,
+                                              );
+                                              return DropdownMenuItem(
+                                                value: p,
+                                                child: Text(p!.nome),
+                                              );
+                                            }).toList(),
+                                        value: selected,
+                                        onChanged:
+                                            (p) => setSt(() => selected = p),
+                                      ),
+
+                                      const SizedBox(height: 12),
+
+                                      // Campo de quantidade
+                                      TextField(
+                                        controller: qtyCtrl,
+                                        keyboardType:
+                                            const TextInputType.numberWithOptions(
+                                              decimal: true,
+                                            ),
+                                        decoration: const InputDecoration(
+                                          labelText: 'Quantidade',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      child: const Text('Cancelar'),
+                                      onPressed: () => Navigator.pop(ctx),
+                                    ),
+                                    ElevatedButton(
+                                      child: const Text('Adicionar'),
+                                      onPressed: () {
+                                        if (selected != null &&
+                                            double.tryParse(qtyCtrl.text) !=
+                                                null) {
+                                          final quantidade = double.parse(
+                                            qtyCtrl.text,
+                                          );
+                                          // chama um método que insere o ItemCompra na lista
+                                          ctrl.addItemToLista(
+                                            produto: selected!,
+                                            quantidade: quantidade,
+                                          );
+                                          Navigator.pop(ctx);
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        );
+
+                        // depois que fechar o modal, recarrega a view
+                        ctrl.init();
+                      },
+                      child: Icon(Icons.add),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                  // botão principal que abre/fecha o menu
+                  FloatingActionButton(
+                    heroTag: 'main_fab',
+                    onPressed: _toggleFab,
+                    child: Icon(_fabOpen ? Icons.close : Icons.menu),
+                  ),
+                ],
               ),
             ),
       ),

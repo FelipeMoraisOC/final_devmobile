@@ -17,9 +17,41 @@ class CustomDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(color: Colors.blue),
-            child: Text(
-              'FMCList',
-              style: TextStyle(color: Colors.white, fontSize: 24),
+            child: FutureBuilder<Map<String, String?>>(
+              future: SharedPreferencesUtils().getUserInfoFromPrefs(),
+              builder: (context, snapshot) {
+                final userData = snapshot.data ?? {};
+                final email = userData['email'] ?? '';
+                final nome = userData['name'] ?? '';
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'FMC List',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'Olá, $nome',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      email,
+                      style: TextStyle(color: Colors.white70, fontSize: 16),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
           ListTile(
@@ -72,7 +104,7 @@ class CustomDrawer extends StatelessWidget {
             title: const Text('Sair'),
             onTap: () async {
               await SharedPreferencesUtils.clearLoginData();
-              Navigator.of(context).pushReplacementNamed('/login');
+              Navigator.of(context).pushReplacementNamed('/onboarding');
             },
           ),
         ],

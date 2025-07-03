@@ -1,10 +1,14 @@
 // home_screen.dart
+import 'package:final_devmobile/core/routes.dart';
 import 'package:final_devmobile/modules/lista_ativa/lista_ativa_screen.dart';
+import 'package:final_devmobile/shared/widgets/animated_circle_progress.dart';
 import 'package:final_devmobile/shared/widgets/custom_app_bar.dart';
 import 'package:final_devmobile/shared/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:final_devmobile/shared/utils/shared_preferences.dart';
+import 'package:flutter/widgets.dart' show RouteAware;
+
 import 'home_controller.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,7 +18,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with RouteAware {
   late HomeController controller;
   bool _loadingUser = true;
   String? _userId;
@@ -35,6 +39,29 @@ class _HomeScreenState extends State<HomeScreen> {
         _loadingUser = false;
       });
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != null) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext(); // bom chamar o super
+    if (_userId != null) {
+      controller.loadData(_userId!);
+    }
   }
 
   @override
@@ -115,65 +142,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Text(resumo.categorias),
                                     ],
                                   ),
-                                  trailing: Container(
-                                    width: 60,
-                                    height: 75,
-                                    padding: const EdgeInsets.all(4),
-                                    decoration:
-                                        resumo.progress == 1
-                                            ? BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary
-                                                      .withOpacity(0.7),
-                                                  blurRadius: 10,
-                                                  spreadRadius: 2,
-                                                ),
-                                              ],
-                                            )
-                                            : null,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: 45,
-                                          height: 45,
-                                          child: Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              CircularProgressIndicator(
-                                                value: resumo.progress,
-                                                backgroundColor: Theme.of(
-                                                      context,
-                                                    ).colorScheme.primary
-                                                    .withOpacity(0.2),
-                                                strokeWidth: 5,
-                                                color:
-                                                    resumo.progress == 1
-                                                        ? Theme.of(
-                                                          context,
-                                                        ).colorScheme.primary
-                                                        : Theme.of(
-                                                          context,
-                                                        ).colorScheme.secondary,
-                                              ),
-                                              Text(
-                                                '${(resumo.progress * 100).toInt()}%',
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                  trailing: AnimatedProgressCircle(
+                                    progress: resumo.progress,
                                   ),
                                 ),
                               ),

@@ -1,8 +1,10 @@
 import 'package:final_devmobile/core/constants.dart';
+import 'package:final_devmobile/core/themes/theme_data.dart';
 import 'package:flutter/material.dart';
 
 class LightTheme {
   static final ThemeData lightTheme = ThemeData(
+    pageTransitionsTheme: myPageTransitions,
     colorScheme: ColorScheme.light(
       primary: AppThemeConstants.primary,
       surface: AppThemeConstants.backgroundLight,

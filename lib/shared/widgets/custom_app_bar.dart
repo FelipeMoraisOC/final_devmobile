@@ -22,7 +22,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       title: Text(
-        'FMCList',
+        'FMC List',
         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
           color: AppThemeConstants.textDark,
           fontWeight: FontWeight.w700,
