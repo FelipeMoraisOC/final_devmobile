@@ -1,6 +1,7 @@
 import 'package:final_devmobile/database/local/user_dao.dart';
 import 'package:final_devmobile/models/user_model.dart';
 import 'package:final_devmobile/shared/utils/encrypt.dart';
+import 'package:final_devmobile/shared/utils/shared_preferences.dart';
 import 'package:final_devmobile/shared/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +31,7 @@ class AuthController {
       return;
     }
     CustomSnackBar.show(context, 'Login realizado com sucesso');
+    await SharedPreferencesUtils.setLoggedIn(true);
     await saveUserInSharedPreferences(user);
     Navigator.pushReplacementNamed(context, '/home', arguments: user);
   }

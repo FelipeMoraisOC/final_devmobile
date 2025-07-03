@@ -1,6 +1,7 @@
 import 'package:final_devmobile/database/local/user_dao.dart';
 import 'package:final_devmobile/models/user_model.dart';
 import 'package:final_devmobile/modules/home/home_controller.dart';
+import 'package:final_devmobile/shared/utils/shared_preferences.dart';
 import 'package:final_devmobile/shared/widgets/custom_app_bar.dart';
 import 'package:final_devmobile/shared/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class AdminScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           FutureBuilder<Map<String, String?>>(
-            future: controller.getUserInfoFromPrefs(),
+            future: SharedPreferencesUtils().getUserInfoFromPrefs(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Padding(

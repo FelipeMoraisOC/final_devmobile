@@ -1,4 +1,9 @@
 import 'package:final_devmobile/modules/admin/admin_screen.dart';
+import 'package:final_devmobile/modules/categoria/categoria_screen.dart';
+import 'package:final_devmobile/modules/configuration/configuration_screen.dart';
+import 'package:final_devmobile/modules/montagem_lista/montagem_lista_screen.dart';
+import 'package:final_devmobile/modules/produto/produto_screen.dart';
+import 'package:final_devmobile/shared/utils/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -13,7 +18,7 @@ class CustomDrawer extends StatelessWidget {
           DrawerHeader(
             decoration: BoxDecoration(color: Colors.blue),
             child: Text(
-              'Katalon Test',
+              'FMCList',
               style: TextStyle(color: Colors.white, fontSize: 24),
             ),
           ),
@@ -24,6 +29,50 @@ class CustomDrawer extends StatelessWidget {
               Navigator.of(
                 context,
               ).push(MaterialPageRoute(builder: (_) => const AdminScreen()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.list_alt),
+            title: const Text('Montagem de Lista'),
+            onTap: () {
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => MontagemListaScreen()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.shopping_bag),
+            title: const Text('Produtos'),
+            onTap: () {
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => ProdutoScreen()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add_box),
+            title: const Text('Categorias'),
+            onTap: () {
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => CategoriaScreen()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Configurações'),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ConfigurationScreen()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Sair'),
+            onTap: () async {
+              await SharedPreferencesUtils.clearLoginData();
+              Navigator.of(context).pushReplacementNamed('/login');
             },
           ),
         ],
